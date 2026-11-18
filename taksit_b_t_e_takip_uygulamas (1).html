@@ -1,0 +1,1815 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taksit & Aylık Bütçe Planlayıcı | Kişisel Finans & Kredi Kartı Takip</title>
+    <meta name="description" content="Kredi kartı taksitlerinizi, aylık gelir-gider dengenizi ve bütçe simülasyonlarınızı tek ekranda yönetin. Kritik harcama eşikleri ve aylık taksit matrisi ile kişisel finans planlayıcı.">
+    <meta name="keywords" content="taksit takip, bütçe planlayıcı, kredi kartı taksit hesaplama, kişisel finans, aylık gelir gider tablosu, harcama simülatörü">
+    <meta name="author" content="rownhy">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#0A0A0C">
+
+    <!-- Open Graph / Sosyal Medya Meta Etiketleri -->
+    <meta property="og:title" content="Taksit & Aylık Bütçe Planlayıcı | Kişisel Finans Terminali">
+    <meta property="og:description" content="Aylık kredi kartı taksit dağılımını, 4/5 haftalık gelir planını ve interaktif harcama simülatörünü tek ekranda takip edin.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Taksit & Aylık Bütçe Planlayıcı">
+    <meta name="twitter:description" content="Kredi kartı taksitlerinizi ve aylık harcama limitlerinizi kritik eşik uyarılarıyla canlı simüle edin.">
+
+    <!-- Schema.org Yapısal Veri (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Taksit & Aylık Bütçe Planlayıcı",
+      "description": "Kredi kartı taksit matrisi ve interaktif aylık bütçe simülasyonu sunan kişisel finans yönetim aracı.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "inLanguage": "tr",
+      "author": {
+        "@type": "Person",
+        "name": "rownhy"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "TRY"
+      }
+    }
+    </script>
+
+    <!-- Performans: Erken Bağlantı & Kritik Font Yükleme -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        obsidian: '#0A0A0C',
+                        card: '#121215',
+                        cardHover: '#18181C',
+                        borderDark: '#1E1E24',
+                        amberAccent: '#E4E4E7',
+                        amberMuted: 'rgba(228, 228, 231, 0.08)',
+                        emeraldAccent: '#34D399',
+                        emeraldMuted: 'rgba(52, 211, 153, 0.1)',
+                        crimsonAccent: '#EF4444',
+                        crimsonMuted: 'rgba(239, 68, 68, 0.12)',
+                        crimsonBorder: 'rgba(239, 68, 68, 0.35)',
+                        blueAccent: '#A1A1AA',
+                        purpleAccent: '#71717A'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0A0A0C;
+            color: #F4F4F5;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Özel Kaydırma Çubuğu (Scrollbar) */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0A0A0C;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #27272A;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3F3F46;
+        }
+
+        .tabular-nums {
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Minimalist Monokrom Range Slider Stili */
+        input[type="range"].budget-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 4px;
+            background: #1E1E24;
+            border-radius: 999px;
+            outline: none;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        input[type="range"].budget-slider:focus-visible {
+            box-shadow: 0 0 0 2px rgba(244, 244, 245, 0.35);
+        }
+
+        input[type="range"].budget-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #F4F4F5;
+            border: 2px solid #0A0A0C;
+            box-shadow: 0 0 0 1px #52525B;
+            cursor: pointer;
+            transition: transform 0.12s ease, background-color 0.12s ease;
+        }
+
+        input[type="range"].budget-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            background: #FFFFFF;
+        }
+
+        input[type="range"].budget-slider::-moz-range-thumb {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #F4F4F5;
+            border: 2px solid #0A0A0C;
+            box-shadow: 0 0 0 1px #52525B;
+            cursor: pointer;
+            transition: transform 0.12s ease;
+        }
+
+        /* Kritik Seviye (%75+) Range Slider Stili */
+        input[type="range"].budget-slider.slider-critical::-webkit-slider-thumb {
+            background: #EF4444;
+            box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.5);
+        }
+
+        input[type="range"].budget-slider.slider-critical::-moz-range-thumb {
+            background: #EF4444;
+            box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.5);
+        }
+
+        /* Sayısal input oklarını gizle */
+        input[type="number"].no-spinner::-webkit-inner-spin-button,
+        input[type="number"].no-spinner::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"].no-spinner {
+            -moz-appearance: textfield;
+        }
+
+        /* Modal animasyonu */
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.97) translateY(6px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .animate-modal {
+            animation: modalFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .installment-cell {
+            transition: background-color 0.15s ease;
+        }
+        .installment-cell:hover {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-zinc-700 selection:text-white">
+
+    <!-- Gizli JSON Yükleme Inputu -->
+    <input type="file" id="import-json-input" accept="application/json,.json" class="hidden" onchange="handleImportJSON(event)">
+
+    <!-- Üst Bildirim (Toast) Alanı -->
+    <div id="toast-container" aria-live="polite" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Üst Bar / Header -->
+    <header class="sticky top-0 z-30 bg-obsidian/90 backdrop-blur-md border-b border-borderDark">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-card border border-borderDark flex items-center justify-center text-zinc-300" aria-hidden="true">
+                    <i class="fa-solid fa-layer-group text-xs"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2.5">
+                        <h1 class="text-sm sm:text-base font-semibold tracking-tight text-zinc-100">Taksit & Aylık Bütçe Planlayıcı</h1>
+                        <span class="hidden md:inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-card text-zinc-400 border border-borderDark">
+                            SİMÜLATÖR
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-1.5 sm:gap-2">
+                <button onclick="exportDataJSON()" title="Verileri JSON olarak yedekle" aria-label="Verileri JSON olarak yedekle"
+                    class="px-2.5 py-1.5 rounded-lg bg-card hover:bg-cardHover border border-borderDark text-zinc-400 hover:text-zinc-200 text-xs font-medium transition-colors flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400">
+                    <i class="fa-solid fa-download text-[11px]" aria-hidden="true"></i>
+                    <span class="hidden lg:inline">Yedekle</span>
+                </button>
+                <button onclick="triggerImportJSON()" title="JSON yedeğinden geri yükle" aria-label="JSON yedeğinden geri yükle"
+                    class="px-2.5 py-1.5 rounded-lg bg-card hover:bg-cardHover border border-borderDark text-zinc-400 hover:text-zinc-200 text-xs font-medium transition-colors flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400">
+                    <i class="fa-solid fa-upload text-[11px]" aria-hidden="true"></i>
+                    <span class="hidden lg:inline">Yükle</span>
+                </button>
+                <button onclick="openResetModal()" title="Varsayılan Verilere Dön" aria-label="Varsayılan Verilere Dön"
+                    class="px-2.5 py-1.5 rounded-lg bg-card hover:bg-cardHover border border-borderDark text-zinc-400 hover:text-zinc-200 text-xs font-medium transition-colors flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400">
+                    <i class="fa-solid fa-rotate-left text-[11px]" aria-hidden="true"></i>
+                    <span class="hidden md:inline">Sıfırla</span>
+                </button>
+                <button onclick="openAddInstallmentModal()"
+                    class="px-3.5 py-1.5 rounded-lg bg-zinc-100 hover:bg-white text-zinc-950 text-xs font-semibold transition-all flex items-center gap-1.5 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">
+                    <i class="fa-solid fa-plus text-[11px]" aria-hidden="true"></i>
+                    <span>Yeni Taksit Ekle</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Ana İçerik -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+        <!-- =================================================================== -->
+        <!-- ÜST BÖLÜM: İNTERAKTİF ÇUBUKLU BÜTÇE SİMÜLATÖRÜ (AY SEÇİCİLİ)         -->
+        <!-- =================================================================== -->
+        <section aria-labelledby="simulator-heading" class="space-y-4">
+            <h2 id="simulator-heading" class="sr-only">Aylık Bütçe Simülatörü ve Özet Göstergeler</h2>
+
+            <!-- Ay Seçme Sekmeleri Barı -->
+            <nav aria-label="Ay Seçimi" class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-card border border-borderDark rounded-xl px-4 py-2.5">
+                <div class="flex items-center gap-2">
+                    <i class="fa-regular fa-calendar text-zinc-400 text-xs" aria-hidden="true"></i>
+                    <span class="text-xs font-medium text-zinc-400">Simülasyon Ayı:</span>
+                </div>
+                <div id="month-tabs-container" role="tablist" aria-label="Bütçe Ayları" class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+                    <!-- JS ile dinamik ay sekmeleri oluşturulacak -->
+                </div>
+            </nav>
+
+            <!-- Seçilen Aya Göre 3 Büyük KPI Özet Kartı -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Kart 1: Toplam Aylık Gelir -->
+                <article class="bg-card border border-borderDark rounded-xl p-5 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-medium text-zinc-400">Toplam Aylık Gelir</span>
+                            <span id="sim-month-badge" class="text-[11px] font-mono px-2 py-0.5 rounded bg-obsidian border border-borderDark text-zinc-400">Aralık 2026</span>
+                        </div>
+                        <div class="flex items-baseline justify-between gap-2">
+                            <div class="font-mono text-2xl sm:text-3xl font-semibold text-zinc-100 tabular-nums" id="sim-income-display" aria-live="polite">8.000,00 ₺</div>
+                            <button onclick="openIncomeModal()" aria-label="Gelir parametrelerini düzenle" class="text-xs text-zinc-400 hover:text-zinc-100 transition-colors flex items-center gap-1 focus-visible:outline-none focus-visible:underline">
+                                <i class="fa-solid fa-pen text-[10px]" aria-hidden="true"></i> Düzenle
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Hızlı 4 Hafta / 5 Hafta Geçiş Butonu -->
+                    <div class="mt-4 pt-3 border-t border-borderDark flex items-center justify-between gap-2">
+                        <span class="text-[11px] text-zinc-500">Haftalık Gelir Modu:</span>
+                        <div class="inline-flex rounded-lg bg-obsidian p-0.5 border border-borderDark" role="group" aria-label="Haftalık Gelir Sayısı">
+                            <button id="btn-4-weeks" onclick="setMonthWeeks(selectedSimMonth, 4)"
+                                class="px-2.5 py-1 rounded-md text-[11px] font-mono font-medium transition-all">
+                                4 Hafta (0 ₺)
+                            </button>
+                            <button id="btn-5-weeks" onclick="setMonthWeeks(selectedSimMonth, 5)"
+                                class="px-2.5 py-1 rounded-md text-[11px] font-mono font-medium transition-all">
+                                5 Hafta (0 ₺)
+                            </button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Kart 2: Seçili Ay Toplam Gider -->
+                <article id="card-total-expense" class="bg-card border border-borderDark rounded-xl p-5 flex flex-col justify-between transition-colors">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-medium text-zinc-400">Seçili Ay Toplam Gider</span>
+                            <span id="sim-inst-ratio-badge" class="text-[11px] font-mono px-2 py-0.5 rounded bg-obsidian border border-borderDark text-zinc-400">
+                                Taksit Yükü: %0,0
+                            </span>
+                        </div>
+                        <div class="font-mono text-2xl sm:text-3xl font-semibold text-zinc-100 tabular-nums" id="sim-total-expense" aria-live="polite">0,00 ₺</div>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-t border-borderDark grid grid-cols-2 gap-2 text-xs">
+                        <div>
+                            <span class="text-zinc-500 block text-[11px]">Aktif Kart Taksitleri</span>
+                            <span class="font-mono font-medium text-zinc-200 tabular-nums" id="sim-installments-sum">0,00 ₺</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-zinc-500 block text-[11px]">Çubuk Harcamaları</span>
+                            <span class="font-mono font-medium text-zinc-300 tabular-nums" id="sim-sliders-sum">0,00 ₺</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Kart 3: Net Kalan / Tasarruf Oranı -->
+                <article id="card-net-remaining" class="bg-card border border-borderDark rounded-xl p-5 flex flex-col justify-between transition-colors">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-medium text-zinc-400">Net Kalan / Tasarruf</span>
+                            <span id="sim-savings-badge" class="text-[11px] font-mono font-medium px-2 py-0.5 rounded bg-obsidian border border-borderDark text-zinc-400">
+                                Gelir Girilmedi
+                            </span>
+                        </div>
+                        <div class="font-mono text-2xl sm:text-3xl font-semibold text-zinc-100 tabular-nums" id="sim-net-remaining" aria-live="polite">0,00 ₺</div>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-t border-borderDark flex items-center justify-between text-xs">
+                        <span class="text-zinc-400" id="sim-status-text">Başlamak için aylık gelirini ve taksitlerini ekle.</span>
+                        <span class="font-mono text-zinc-500 text-[11px]" id="sim-daily-limit">Günlük: 0,00 ₺</span>
+                    </div>
+                </article>
+            </div>
+
+            <!-- Gider Dağılımı Progress Bar -->
+            <div class="bg-card border border-borderDark rounded-xl p-4 sm:p-5 space-y-3">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <span class="text-xs font-medium text-zinc-300">
+                        Gider Dağılımı & Gelir Kullanım Oranı
+                    </span>
+                    <div class="flex flex-wrap items-center gap-4 text-xs">
+                        <span id="legend-inst" class="flex items-center gap-1.5 text-zinc-300">
+                            <span id="legend-inst-dot" class="w-2 h-2 rounded-full bg-zinc-200"></span>
+                            Kart Taksitleri (<span id="bar-pct-inst" class="font-mono">0%</span>)
+                        </span>
+                        <span class="flex items-center gap-1.5 text-zinc-400">
+                            <span class="w-2 h-2 rounded-full bg-zinc-500"></span>
+                            Günlük Yaşam (<span id="bar-pct-daily" class="font-mono">0%</span>)
+                        </span>
+                        <span class="flex items-center gap-1.5 text-zinc-500">
+                            <span class="w-2 h-2 rounded-full bg-zinc-700"></span>
+                            Kişisel & Diğer (<span id="bar-pct-personal" class="font-mono">0%</span>)
+                        </span>
+                        <span id="legend-rem" class="flex items-center gap-1.5 text-emeraldAccent/90 font-medium">
+                            <span id="legend-rem-dot" class="w-2 h-2 rounded-full bg-emeraldAccent"></span>
+                            <span id="legend-rem-label">Kalan</span> (<span id="bar-pct-rem" class="font-mono">0%</span>)
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Monokrom Segmentli İlerleme Çubuğu -->
+                <div class="w-full h-2.5 bg-obsidian rounded-full overflow-hidden flex border border-borderDark p-0.5 gap-0.5" role="img" aria-label="Gelir dağılım çubuğu">
+                    <div id="seg-inst" class="h-full bg-zinc-200 rounded-l-full transition-all duration-150" style="width: 50%"></div>
+                    <div id="seg-daily" class="h-full bg-zinc-500 transition-all duration-150" style="width: 25%"></div>
+                    <div id="seg-personal" class="h-full bg-zinc-700 transition-all duration-150" style="width: 5%"></div>
+                    <div id="seg-rem" class="h-full bg-emeraldAccent/80 rounded-r-full transition-all duration-150" style="width: 20%"></div>
+                </div>
+            </div>
+
+            <!-- İnteraktif Kaydırma Çubukları (Sliders) Bölümü -->
+            <div class="bg-card border border-borderDark rounded-xl p-5 space-y-5">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-borderDark">
+                    <div>
+                        <h3 class="text-sm font-semibold text-zinc-100">
+                            Aylık Harcama Simülasyon Çubukları
+                        </h3>
+                        <p class="text-xs text-zinc-500 mt-0.5">Çubukları kaydır, <span class="text-zinc-300">- / +</span> ile ince ayar yap veya tutara tıklayıp doğrudan rakam gir</p>
+                    </div>
+                    <button onclick="openAddSliderModal()" class="px-3 py-1.5 rounded-lg bg-obsidian hover:bg-cardHover border border-borderDark text-xs font-medium text-zinc-300 hover:text-white transition-colors flex items-center gap-1.5 self-start sm:self-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400">
+                        <i class="fa-solid fa-plus text-zinc-400 text-[10px]" aria-hidden="true"></i>
+                        <span>Kalem Ekle</span>
+                    </button>
+                </div>
+
+                <!-- 2 Kolonlu Kategori Grid'i -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-5" id="sliders-grid-container">
+                    <!-- Kategori 1: Günlük Yaşam & Kampüs -->
+                    <div class="bg-obsidian/60 border border-borderDark rounded-xl p-4 space-y-4">
+                        <div class="flex items-center justify-between border-b border-borderDark pb-2.5">
+                            <div class="flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-zinc-300"></span>
+                                <h4 class="text-xs font-semibold uppercase tracking-wider text-zinc-300">Günlük Yaşam & Kampüs</h4>
+                            </div>
+                            <span id="cat-daily-total" class="font-mono text-xs font-medium text-zinc-200 tabular-nums">0,00 ₺</span>
+                        </div>
+                        <div id="sliders-list-daily" class="space-y-4">
+                            <!-- JS ile doldurulacak -->
+                        </div>
+                    </div>
+
+                    <!-- Kategori 2: Kişisel & Abonelikler -->
+                    <div class="bg-obsidian/60 border border-borderDark rounded-xl p-4 space-y-4">
+                        <div class="flex items-center justify-between border-b border-borderDark pb-2.5">
+                            <div class="flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-zinc-500"></span>
+                                <h4 class="text-xs font-semibold uppercase tracking-wider text-zinc-300">Kişisel & Abonelikler</h4>
+                            </div>
+                            <span id="cat-personal-total" class="font-mono text-xs font-medium text-zinc-200 tabular-nums">0,00 ₺</span>
+                        </div>
+                        <div id="sliders-list-personal" class="space-y-4">
+                            <!-- JS ile doldurulacak -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =================================================================== -->
+        <!-- ALT BÖLÜM: KREDİ KARTI TAKSİT MATRİSİ                               -->
+        <!-- =================================================================== -->
+        <section aria-labelledby="matrix-heading" class="bg-card border border-borderDark rounded-xl overflow-hidden">
+            <div class="p-5 border-b border-borderDark flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                    <div class="flex items-center gap-2.5">
+                        <h2 id="matrix-heading" class="text-sm font-semibold text-zinc-100">
+                            Kredi Kartı Taksit Matrisi
+                        </h2>
+                        <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-obsidian border border-borderDark text-zinc-300 tabular-nums" id="matrix-total-remaining-badge">
+                            Kalan Borç: 0,00 ₺
+                        </span>
+                    </div>
+                    <p class="text-xs text-zinc-500 mt-1">
+                        Ödediğin taksit hücresine tıklayarak <span class="text-zinc-300 font-medium">"Ödendi"</span> işaretleyebilir ve o ayın yükünden düşebilirsin.
+                    </p>
+                </div>
+                <div class="flex items-center gap-2 text-xs text-zinc-400 bg-obsidian px-3 py-1.5 rounded-lg border border-borderDark self-start sm:self-auto">
+                    <i class="fa-regular fa-hand-pointer text-zinc-400" aria-hidden="true"></i>
+                    <span>Hücreye tıkla = Ödendi işaretle</span>
+                </div>
+            </div>
+
+            <!-- Responsive Yatay Kaydırmalı Tablo -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse" id="matrix-table">
+                    <thead id="matrix-thead" class="bg-obsidian/90 border-b border-borderDark text-[11px] uppercase tracking-wider text-zinc-400">
+                        <!-- JS ile dinamik oluşturulacak -->
+                    </thead>
+                    <tbody id="matrix-tbody" class="divide-y divide-borderDark/60 text-sm">
+                        <!-- JS ile dinamik oluşturulacak -->
+                    </tbody>
+                    <tfoot id="matrix-tfoot" class="bg-obsidian/60 border-t border-borderDark text-sm">
+                        <!-- JS ile dinamik oluşturulacak -->
+                    </tfoot>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-borderDark py-4 mt-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-zinc-500">
+            <span>Taksit & Aylık Bütçe Planlayıcı • Veriler tarayıcınızda otomatik saklanır.</span>
+            <div class="flex items-center gap-4">
+                <button onclick="exportDataJSON()" class="hover:text-zinc-300 transition-colors">Yedekle (JSON)</button>
+                <button onclick="triggerImportJSON()" class="hover:text-zinc-300 transition-colors">Yükle</button>
+                <span class="font-mono text-zinc-400">TRY (₺)</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- =================================================================== -->
+    <!-- MODALLAR                                                            -->
+    <!-- =================================================================== -->
+
+    <!-- 1. GELİR DÜZENLEME MODALI -->
+    <div id="income-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div class="bg-card border border-borderDark rounded-xl max-w-md w-full p-6 shadow-2xl animate-modal">
+            <div class="flex items-center justify-between pb-4 border-b border-borderDark">
+                <h3 class="text-sm font-semibold text-zinc-100">Gelir Parametrelerini Düzenle</h3>
+                <button onclick="closeIncomeModal()" class="text-zinc-400 hover:text-white p-1 rounded-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form onsubmit="saveIncomeModal(event)" class="mt-4 space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-zinc-400 mb-1.5">Sabit Aylık Gelir (₺)</label>
+                    <input type="number" id="modal-fixed-income" step="50" min="0" required
+                        class="w-full bg-obsidian border border-borderDark focus:border-zinc-400 rounded-lg px-3.5 py-2 text-sm font-mono text-white focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-400 mb-1.5">Haftalık Ek Gelir / Harçlık (₺)</label>
+                    <input type="number" id="modal-weekly-allowance" step="50" min="0" required
+                        class="w-full bg-obsidian border border-borderDark focus:border-zinc-400 rounded-lg px-3.5 py-2 text-sm font-mono text-white focus:outline-none">
+                </div>
+                <div class="flex items-center justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeIncomeModal()" class="px-3.5 py-2 rounded-lg bg-obsidian hover:bg-cardHover border border-borderDark text-xs font-medium text-zinc-300">
+                        İptal
+                    </button>
+                    <button type="submit" class="px-4 py-2 rounded-lg bg-zinc-100 hover:bg-white text-xs font-semibold text-zinc-950">
+                        Kaydet
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. YENİ HARCAMA ÇUBUĞU (SLIDER) EKLEME MODALI -->
+    <div id="add-slider-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div class="bg-card border border-borderDark rounded-xl max-w-md w-full p-6 shadow-2xl animate-modal">
+            <div class="flex items-center justify-between pb-4 border-b border-borderDark">
+                <h3 class="text-sm font-semibold text-zinc-100">Yeni Harcama Çubuğu Ekle</h3>
+                <button onclick="closeAddSliderModal()" class="text-zinc-400 hover:text-white p-1 rounded-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form onsubmit="handleAddSlider(event)" class="mt-4 space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-zinc-400 mb-1.5">Harcama Kalemi Adı *</label>
+                    <input type="text" id="slider-new-label" required placeholder="Örn: Spor Salonu, Kitap, Kıyafet..."
+                        class="w-full bg-obsidian border border-borderDark focus:border-zinc-400 rounded-lg px-3.5 py-2 text-sm text-white placeholder-zinc-600 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-zinc-400 mb-1.5">Kategori *</label>
+                    <select id="slider-new-category"
+                        class="w-full bg-obsidian border border-borderDark focus:border-zinc-400 rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none">
+                        <option value="daily">Günlük Yaşam & Kampüs</option>
+                        <option value="personal">Kişisel & Abonelikler</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-zinc-400 mb-1.5">Başlangıç Tutarı (₺) *</label>
+                        <input type="number" id="slider-new-val" required min="0" step="25" value="400"
+                            class="w-full bg-obsidian border border-borderDark focus:border-zinc-400 rounded-lg px-3.5 py-2 text-sm font-mono text-white focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-zinc-400 mb-1.5">Maksimum Limit (₺) *</label>
+                        <input type="number" id="slider-new-max" required min="100" step="100" value="3000"
+                            class="w-full bg-obsidian border border-borderDark focus:border-zinc-400 rounded-lg px-3.5 py-2 text-sm font-mono text-white focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeAddSliderModal()" class="px-3.5 py-2 rounded-lg bg-obsidian hover:bg-cardHover border border-borderDark text-xs font-medium text-zinc-300">
+                        İptal
+                    </button>
+                    <button type="submit" class="px-4 py-2 rounded-lg bg-zinc-100 hover:bg-white text-xs font-semibold text-zinc-950">
+                        Çubuğu Ekle
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 3. YENİ TAKSİT EKLEME MODALI -->
+    <div id="add-installment-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div class="bg-card border border-borderDark rounded-xl max-w-md w-full p-6 shadow-2xl animate-modal">
+            <div class="flex items-center justify-between pb-4 border-b border-borderDark">
+                <h3 class="text-sm font-semibold text-zinc-100">Yeni Taksitli Harcama Ekle</h3>
+                <button onclick="closeAddInstallmentModal()" class="text-zinc-400 hover:text-white p-1 rounded-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form onsubmit="handleAddInstallment(event)" class="mt-4 space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-zinc-400 mb-1.5">Ürün / Harcama Adı *</label>
+                    <input type="text" id="new-name" required placeholder="Örn: Kulaklık, Klavye, Mont..."
+                        class="w-full bg-obsidian border border-borderDark focus:border-zinc-400 rounded-lg px-3.5 py-2 text-sm text-white placeholder-zinc-600 focus:outline-none">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-zinc-400 mb-1.5">Toplam Tutar (₺) *</label>
+                        <input type="number" id="new-amount" required step="0.01" min="1" placeholder="3000.00"
+                            oninput="updateInstallmentPreview()"
+                            class="w-full bg-obsidian border border-borderDark focus:border-zinc-400 rounded-lg px-3.5 py-2 text-sm font-mono text-white placeholder-zinc-600 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-zinc-400 mb-1.5">Taksit Sayısı *</label>
+                        <select id="new-count" onchange="updateInstallmentPreview()"
+                            class="w-full bg-obsidian border border-borderDark focus:border-zinc-400 rounded-lg px-3.5 py-2 text-sm font-mono text-white focus:outline-none">
+                            <option value="1">1 Taksit (Tek Çekim)</option>
+                            <option value="2">2 Taksit</option>
+                            <option value="3" selected>3 Taksit</option>
+                            <option value="4">4 Taksit</option>
+                            <option value="5">5 Taksit</option>
+                            <option value="6">6 Taksit</option>
+                            <option value="9">9 Taksit</option>
+                            <option value="12">12 Taksit</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-zinc-400 mb-1.5">Alım Tarihi</label>
+                        <input type="text" id="new-date" placeholder="Örn: 18 Kasım 2026"
+                            class="w-full bg-obsidian border border-borderDark focus:border-zinc-400 rounded-lg px-3.5 py-2 text-sm text-white placeholder-zinc-600 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-zinc-400 mb-1.5">İlk Taksit Ekstre Ayı *</label>
+                        <select id="new-start-month"
+                            class="w-full bg-obsidian border border-borderDark focus:border-zinc-400 rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none">
+                        </select>
+                    </div>
+                </div>
+
+                <div class="bg-obsidian border border-borderDark rounded-lg p-3 flex items-center justify-between">
+                    <span class="text-xs text-zinc-400">Aylık Ortalama Taksit:</span>
+                    <span id="new-monthly-preview" class="font-mono text-sm font-semibold text-zinc-100">0,00 ₺ / ay</span>
+                </div>
+
+                <div class="flex items-center justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeAddInstallmentModal()" class="px-3.5 py-2 rounded-lg bg-obsidian hover:bg-cardHover border border-borderDark text-xs font-medium text-zinc-300">
+                        İptal
+                    </button>
+                    <button type="submit" class="px-4 py-2 rounded-lg bg-zinc-100 hover:bg-white text-xs font-semibold text-zinc-950">
+                        Plana Ekle
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 4. SIFIRLAMA ONAY MODALI -->
+    <div id="reset-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div class="bg-card border border-borderDark rounded-xl max-w-sm w-full p-6 shadow-2xl animate-modal">
+            <h3 class="text-sm font-semibold text-zinc-100 mb-2">Tüm Verileri Sıfırla?</h3>
+            <p class="text-xs text-zinc-400 leading-relaxed mb-5">
+                Girdiğin gelirler, harcama çubukları ve tüm taksit kayıtları silinerek uygulama tamamen boş (0 ₺) başlangıç durumuna döndürülecektir.
+            </p>
+            <div class="flex items-center justify-end gap-2">
+                <button onclick="closeResetModal()" class="px-3.5 py-2 rounded-lg bg-obsidian hover:bg-cardHover border border-borderDark text-xs font-medium text-zinc-300">
+                    Vazgeç
+                </button>
+                <button onclick="confirmResetData()" class="px-4 py-2 rounded-lg bg-red-500/90 hover:bg-red-500 text-xs font-semibold text-white">
+                    Evet, Sıfırla
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =========================================================================
+        // 1. SABİTLER VE SIFIR (TEMİZ BAŞLANGIÇ) VERİ YAPISI
+        // =========================================================================
+        const STORAGE_KEY = 'taksit_butce_clean_v1';
+
+        const TURKISH_MONTHS = [
+            'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+            'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'
+        ];
+
+        function getCurrentMonthKey() {
+            const now = new Date();
+            const y = now.getFullYear();
+            const m = String(now.getMonth() + 1).padStart(2, '0');
+            return `${y}-${m}`;
+        }
+
+        function addMonths(startKey, offset) {
+            const [y, m] = startKey.split('-').map(Number);
+            const totalMonths = (y * 12 + (m - 1)) + offset;
+            const newY = Math.floor(totalMonths / 12);
+            const newM = (totalMonths % 12) + 1;
+            return `${newY}-${String(newM).padStart(2, '0')}`;
+        }
+
+        function createCleanDefaultState() {
+            const baseMonth = getCurrentMonthKey();
+            const initialMonthWeeks = {};
+            for (let i = 0; i < 6; i++) {
+                initialMonthWeeks[addMonths(baseMonth, i)] = 4;
+            }
+
+            return {
+                fixedIncome: 0,
+                weeklyAllowance: 0,
+                selectedMonth: baseMonth,
+                monthWeeks: initialMonthWeeks,
+                sliders: [
+                    {
+                        id: 'sl-food',
+                        category: 'daily',
+                        label: 'Yemek & Kahve',
+                        value: 0,
+                        min: 0,
+                        max: 5000,
+                        step: 50,
+                        isDefault: false
+                    },
+                    {
+                        id: 'sl-transport',
+                        category: 'daily',
+                        label: 'Ulaşım',
+                        value: 0,
+                        min: 0,
+                        max: 3000,
+                        step: 25,
+                        isDefault: false
+                    },
+                    {
+                        id: 'sl-social',
+                        category: 'personal',
+                        label: 'Sosyal & Eğlence',
+                        value: 0,
+                        min: 0,
+                        max: 4000,
+                        step: 50,
+                        isDefault: false
+                    },
+                    {
+                        id: 'sl-subs',
+                        category: 'personal',
+                        label: 'Faturalar & Abonelikler',
+                        value: 0,
+                        min: 0,
+                        max: 3000,
+                        step: 25,
+                        isDefault: false
+                    }
+                ],
+                paidCells: {},
+                items: []
+            };
+        }
+
+        let appState = loadState();
+        let selectedSimMonth = appState.selectedMonth || getCurrentMonthKey();
+        let saveDebounceTimer = null;
+
+        // =========================================================================
+        // 2. YARDIMCI FONKSİYONLAR & PERFORMANS OPTİMİZASYONU
+        // =========================================================================
+        function loadState() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return createCleanDefaultState();
+                const parsed = JSON.parse(raw);
+                const clean = createCleanDefaultState();
+                return {
+                    fixedIncome: Number(parsed.fixedIncome) || 0,
+                    weeklyAllowance: Number(parsed.weeklyAllowance) || 0,
+                    selectedMonth: parsed.selectedMonth || clean.selectedMonth,
+                    monthWeeks: (parsed.monthWeeks && typeof parsed.monthWeeks === 'object') ? parsed.monthWeeks : clean.monthWeeks,
+                    sliders: Array.isArray(parsed.sliders) ? parsed.sliders : clean.sliders,
+                    paidCells: (parsed.paidCells && typeof parsed.paidCells === 'object') ? parsed.paidCells : {},
+                    items: Array.isArray(parsed.items) ? parsed.items : []
+                };
+            } catch (e) {
+                return createCleanDefaultState();
+            }
+        }
+
+        function saveState() {
+            try {
+                appState.selectedMonth = selectedSimMonth;
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+            } catch (e) {
+                console.error('Kayıt hatası:', e);
+            }
+        }
+
+        // 60fps sürükleme performansı için debounced localStorage kaydı
+        function scheduleSaveState() {
+            if (saveDebounceTimer) clearTimeout(saveDebounceTimer);
+            saveDebounceTimer = setTimeout(() => {
+                saveState();
+            }, 250);
+        }
+
+        // Türk Lirası formatlayıcı: 4018.92 -> "4.018,92 ₺"
+        function formatTRY(amount) {
+            const val = Number(amount) || 0;
+            return val.toLocaleString('tr-TR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }) + ' ₺';
+        }
+
+        // Tam sayı formatı (slider üstü etiketler için): 2000 -> "2.000 ₺"
+        function formatTRYShort(amount) {
+            const val = Number(amount) || 0;
+            return val.toLocaleString('tr-TR', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }) + ' ₺';
+        }
+
+        function formatMonthKey(monthKey) {
+            const [yearStr, monthStr] = monthKey.split('-');
+            const monthIdx = parseInt(monthStr, 10) - 1;
+            return `${TURKISH_MONTHS[monthIdx]} ${yearStr}`;
+        }
+
+        function getAllActiveMonths() {
+            const baseMonth = getCurrentMonthKey();
+            const monthSet = new Set();
+
+            // Mevcut aydan itibaren ileriye dönük en az 6 ay oluştur
+            for (let i = 0; i < 6; i++) {
+                monthSet.add(addMonths(baseMonth, i));
+            }
+
+            // Kullanıcının eklediği taksitler daha ileri aylara uzanıyorsa aralığı dinamik genişlet
+            let maxMonth = Array.from(monthSet).sort().pop();
+            appState.items.forEach(item => {
+                Object.keys(item.schedule).forEach(mKey => {
+                    monthSet.add(mKey);
+                    if (mKey > maxMonth) maxMonth = mKey;
+                });
+            });
+
+            // Başlangıçtan en son taksit ayına kadar boşluksuz ay listesi üret
+            const sortedInitial = Array.from(monthSet).sort();
+            const firstMonth = sortedInitial[0];
+            const continuousMonths = [];
+            let cursor = firstMonth;
+            while (cursor <= maxMonth) {
+                continuousMonths.push(cursor);
+                cursor = addMonths(cursor, 1);
+            }
+            return continuousMonths;
+        }
+
+        // Aktif ödenmemiş taksit yükü en yüksek (ve gelirinin >%45'ini aşan) kritik pik ayı tespit eder
+        function getPeakCriticalMonth(months) {
+            let peakMonth = null;
+            let maxLoad = 0;
+
+            months.forEach(mKey => {
+                let activeSum = 0;
+                appState.items.forEach(item => {
+                    const val = item.schedule[mKey] || 0;
+                    if (val > 0 && !appState.paidCells[`${item.id}_${mKey}`]) {
+                        activeSum += val;
+                    }
+                });
+
+                const weeks = appState.monthWeeks[mKey] || 4;
+                const income = appState.fixedIncome + (appState.weeklyAllowance * weeks);
+
+                if (activeSum > maxLoad && income > 0 && (activeSum / income) > 0.45) {
+                    maxLoad = activeSum;
+                    peakMonth = mKey;
+                }
+            });
+
+            return peakMonth;
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const icon = type === 'success'
+                ? '<i class="fa-solid fa-check text-emeraldAccent"></i>'
+                : '<i class="fa-solid fa-info text-zinc-400"></i>';
+
+            toast.className = 'pointer-events-auto flex items-center gap-2.5 bg-card border border-borderDark text-zinc-100 text-xs font-medium px-4 py-2.5 rounded-lg shadow-xl animate-modal';
+            toast.innerHTML = `${icon}<span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(4px)';
+                toast.style.transition = 'all 0.2s ease';
+                setTimeout(() => toast.remove(), 200);
+            }, 2200);
+        }
+
+        // =========================================================================
+        // 3. ANA RENDER & CANLI HESAPLAMA MOTORU
+        // =========================================================================
+        function renderAll() {
+            const months = getAllActiveMonths();
+            if (!months.includes(selectedSimMonth)) {
+                selectedSimMonth = months[0];
+            }
+
+            renderMonthTabs(months);
+            renderSlidersList();
+            updateSimulatorMetrics();
+            renderMatrixTable(months);
+        }
+
+        // Ay Seçme Sekmelerini Oluştur
+        function renderMonthTabs(months) {
+            const container = document.getElementById('month-tabs-container');
+            const peakMonth = getPeakCriticalMonth(months);
+            let html = '';
+
+            months.forEach(mKey => {
+                const isSelected = mKey === selectedSimMonth;
+                const isPeak = mKey === peakMonth;
+
+                let btnStyle = '';
+                if (isSelected && isPeak) {
+                    btnStyle = 'bg-zinc-100 text-zinc-950 font-semibold ring-1 ring-crimsonAccent/70';
+                } else if (isSelected) {
+                    btnStyle = 'bg-zinc-100 text-zinc-950 font-semibold';
+                } else if (isPeak) {
+                    btnStyle = 'bg-crimsonMuted text-zinc-200 hover:text-white border border-crimsonBorder';
+                } else {
+                    btnStyle = 'bg-obsidian text-zinc-400 hover:text-zinc-200 border border-borderDark';
+                }
+
+                html += `
+                    <button role="tab" aria-selected="${isSelected}" onclick="selectSimulationMonth('${mKey}')"
+                        class="px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 ${btnStyle}">
+                        <span>${formatMonthKey(mKey)}</span>
+                        ${isPeak ? `
+                            <span class="inline-flex items-center gap-1 px-1.5 py-0.2 rounded text-[10px] font-mono font-semibold ${isSelected ? 'bg-crimsonAccent text-white' : 'bg-crimsonAccent/20 text-crimsonAccent'}">
+                                <span class="w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-white' : 'bg-crimsonAccent'}"></span>
+                                Kritik Yük
+                            </span>` : ''}
+                    </button>`;
+            });
+            container.innerHTML = html;
+        }
+
+        // Kaydırma Çubuklarını (Sliders + -/+ Adım Butonları + Tıkla-Düzenle Tutar) Oluştur
+        function renderSlidersList() {
+            const dailyContainer = document.getElementById('sliders-list-daily');
+            const personalContainer = document.getElementById('sliders-list-personal');
+
+            let dailyHTML = '';
+            let personalHTML = '';
+
+            appState.sliders.forEach(sl => {
+                const ratio = (sl.value - sl.min) / Math.max(1, (sl.max - sl.min));
+                const pct = Math.min(100, Math.max(0, ratio * 100));
+                const isHighSpend = pct > 75;
+                const fillColor = isHighSpend ? '#EF4444' : (sl.category === 'daily' ? '#A1A1AA' : '#71717A');
+
+                const valBadgeClass = isHighSpend
+                    ? 'font-mono text-xs font-semibold text-crimsonAccent bg-crimsonMuted px-2.5 py-0.5 rounded border border-crimsonBorder tabular-nums transition-colors cursor-pointer hover:brightness-110'
+                    : 'font-mono text-xs font-semibold text-zinc-100 bg-card hover:bg-cardHover px-2.5 py-0.5 rounded border border-borderDark tabular-nums transition-colors cursor-pointer';
+
+                const sliderCard = `
+                    <div class="space-y-2 group">
+                        <div class="flex items-center justify-between gap-2">
+                            <div class="flex items-center gap-2">
+                                <label for="${sl.id}" class="text-xs sm:text-sm font-medium text-zinc-300 cursor-pointer">
+                                    ${sl.label}
+                                </label>
+                                <button onclick="deleteSlider('${sl.id}')" title="Bu kalemi kaldır" aria-label="${sl.label} kalemini sil"
+                                    class="text-zinc-600 hover:text-red-400 text-[11px] transition-colors">
+                                    <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <div id="val-wrapper-${sl.id}" class="flex items-center">
+                                <button type="button" id="val-label-${sl.id}" onclick="enableInlineSliderEdit('${sl.id}')"
+                                    title="Doğrudan tutar girmek için tıkla"
+                                    class="${valBadgeClass}">
+                                    ${formatTRYShort(sl.value)}
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2.5">
+                            <button type="button" onclick="stepSliderValue('${sl.id}', -1)"
+                                aria-label="${sl.label} azalt" title="-${sl.step} ₺"
+                                class="w-6 h-6 shrink-0 rounded-md bg-card hover:bg-cardHover active:scale-95 border border-borderDark text-zinc-400 hover:text-zinc-100 flex items-center justify-center text-[10px] transition-colors">
+                                <i class="fa-solid fa-minus" aria-hidden="true"></i>
+                            </button>
+                            <div class="relative flex-1 flex items-center">
+                                <input type="range" id="${sl.id}"
+                                    class="budget-slider ${isHighSpend ? 'slider-critical' : ''}"
+                                    style="background: linear-gradient(to right, ${fillColor} 0%, ${fillColor} ${pct}%, #1E1E24 ${pct}%, #1E1E24 100%);"
+                                    min="${sl.min}" max="${sl.max}" step="${sl.step}" value="${sl.value}"
+                                    oninput="onSliderInput('${sl.id}', this.value)">
+                            </div>
+                            <button type="button" onclick="stepSliderValue('${sl.id}', 1)"
+                                aria-label="${sl.label} artır" title="+${sl.step} ₺"
+                                class="w-6 h-6 shrink-0 rounded-md bg-card hover:bg-cardHover active:scale-95 border border-borderDark text-zinc-400 hover:text-zinc-100 flex items-center justify-center text-[10px] transition-colors">
+                                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <div class="flex justify-between text-[10px] font-mono text-zinc-600 px-8">
+                            <span>${formatTRYShort(sl.min)}</span>
+                            <span>${formatTRYShort(sl.max)}</span>
+                        </div>
+                    </div>`;
+
+                if (sl.category === 'daily') {
+                    dailyHTML += sliderCard;
+                } else {
+                    personalHTML += sliderCard;
+                }
+            });
+
+            dailyContainer.innerHTML = dailyHTML || '<p class="text-xs text-zinc-500">Bu kategoride harcama kalemi yok. Sağ üstten "+ Kalem Ekle" ile ekleyebilirsin.</p>';
+            personalContainer.innerHTML = personalHTML || '<p class="text-xs text-zinc-500">Bu kategoride harcama kalemi yok. Sağ üstten "+ Kalem Ekle" ile ekleyebilirsin.</p>';
+        }
+
+        // - / + butonları ile hassas adım kontrolü
+        function stepSliderValue(sliderId, direction) {
+            const sliderObj = appState.sliders.find(s => s.id === sliderId);
+            if (!sliderObj) return;
+            const nextVal = Math.min(sliderObj.max, Math.max(sliderObj.min, sliderObj.value + (direction * sliderObj.step)));
+            const inputEl = document.getElementById(sliderId);
+            if (inputEl) inputEl.value = nextVal;
+            onSliderInput(sliderId, nextVal);
+        }
+
+        // Tutara tıklayınca inline sayısal giriş kutusu açar
+        function enableInlineSliderEdit(sliderId) {
+            const sliderObj = appState.sliders.find(s => s.id === sliderId);
+            const wrapper = document.getElementById(`val-wrapper-${sliderId}`);
+            if (!sliderObj || !wrapper) return;
+
+            wrapper.innerHTML = `
+                <input type="number" id="inline-input-${sliderId}"
+                    class="no-spinner w-20 bg-card border border-zinc-400 rounded px-2 py-0.5 text-right font-mono text-xs font-semibold text-white focus:outline-none tabular-nums"
+                    min="${sliderObj.min}" max="${sliderObj.max}" step="1" value="${sliderObj.value}"
+                    onblur="commitInlineSliderEdit('${sliderId}', this.value)"
+                    onkeydown="handleInlineSliderKey(event, '${sliderId}', this.value)">`;
+
+            const inlineInput = document.getElementById(`inline-input-${sliderId}`);
+            if (inlineInput) {
+                inlineInput.focus();
+                inlineInput.select();
+            }
+        }
+
+        function handleInlineSliderKey(event, sliderId, rawValue) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                commitInlineSliderEdit(sliderId, rawValue);
+            } else if (event.key === 'Escape') {
+                renderSlidersList();
+            }
+        }
+
+        function commitInlineSliderEdit(sliderId, rawValue) {
+            const sliderObj = appState.sliders.find(s => s.id === sliderId);
+            if (!sliderObj) return;
+
+            let parsed = parseFloat(rawValue);
+            if (isNaN(parsed)) parsed = sliderObj.value;
+            parsed = Math.max(sliderObj.min, Math.round(parsed));
+
+            // Eğer girilen değer mevcut maksimumu aşarsa limiti dinamik genişlet
+            if (parsed > sliderObj.max) {
+                sliderObj.max = Math.ceil(parsed / 500) * 500;
+            }
+
+            sliderObj.value = parsed;
+            saveState();
+            renderSlidersList();
+            updateSimulatorMetrics();
+        }
+
+        // Slider hareket ettikçe DOM'u yeniden çizmeden milisaniyeler içinde metrikleri günceller
+        function onSliderInput(sliderId, rawValue) {
+            const val = parseFloat(rawValue) || 0;
+            const sliderObj = appState.sliders.find(s => s.id === sliderId);
+            if (!sliderObj) return;
+
+            sliderObj.value = val;
+
+            const inputEl = document.getElementById(sliderId);
+            const labelEl = document.getElementById(`val-label-${sliderId}`);
+            const pct = Math.min(100, Math.max(0, ((val - sliderObj.min) / Math.max(1, (sliderObj.max - sliderObj.min))) * 100));
+            const isHighSpend = pct > 75;
+
+            if (inputEl) {
+                const fillColor = isHighSpend ? '#EF4444' : (sliderObj.category === 'daily' ? '#A1A1AA' : '#71717A');
+                inputEl.style.background = `linear-gradient(to right, ${fillColor} 0%, ${fillColor} ${pct}%, #1E1E24 ${pct}%, #1E1E24 100%)`;
+                inputEl.classList.toggle('slider-critical', isHighSpend);
+            }
+            if (labelEl) {
+                labelEl.textContent = formatTRYShort(val);
+                labelEl.className = isHighSpend
+                    ? 'font-mono text-xs font-semibold text-crimsonAccent bg-crimsonMuted px-2.5 py-0.5 rounded border border-crimsonBorder tabular-nums transition-colors cursor-pointer hover:brightness-110'
+                    : 'font-mono text-xs font-semibold text-zinc-100 bg-card hover:bg-cardHover px-2.5 py-0.5 rounded border border-borderDark tabular-nums transition-colors cursor-pointer';
+            }
+
+            scheduleSaveState();
+            updateSimulatorMetrics();
+        }
+
+        // Seçili ayın özet kartlarını, kritik eşikleri ve gider dağılım barını günceller
+        function updateSimulatorMetrics() {
+            const weeks = appState.monthWeeks[selectedSimMonth] || 4;
+            const monthlyIncome = appState.fixedIncome + (appState.weeklyAllowance * weeks);
+
+            let activeInstallmentsSum = 0;
+            appState.items.forEach(item => {
+                const amt = item.schedule[selectedSimMonth] || 0;
+                const isPaid = !!appState.paidCells[`${item.id}_${selectedSimMonth}`];
+                if (amt > 0 && !isPaid) {
+                    activeInstallmentsSum += amt;
+                }
+            });
+            activeInstallmentsSum = Number(activeInstallmentsSum.toFixed(2));
+
+            let dailySum = 0;
+            let personalSum = 0;
+            appState.sliders.forEach(sl => {
+                if (sl.category === 'daily') dailySum += sl.value;
+                else personalSum += sl.value;
+            });
+
+            const slidersTotal = dailySum + personalSum;
+            const totalExpense = Number((activeInstallmentsSum + slidersTotal).toFixed(2));
+            const netRemaining = Number((monthlyIncome - totalExpense).toFixed(2));
+            const hasIncome = monthlyIncome > 0;
+            const savingsRate = hasIncome ? ((netRemaining / monthlyIncome) * 100) : 0;
+            const installmentRatio = hasIncome ? ((activeInstallmentsSum / monthlyIncome) * 100) : 0;
+
+            const isHighInstallmentLoad = hasIncome && installmentRatio > 45;
+            const isDeficit = netRemaining < 0;
+            const isLowBuffer = hasIncome && !isDeficit && savingsRate < 15;
+
+            document.getElementById('cat-daily-total').textContent = formatTRY(dailySum);
+            document.getElementById('cat-personal-total').textContent = formatTRY(personalSum);
+
+            document.getElementById('sim-month-badge').textContent = formatMonthKey(selectedSimMonth);
+            document.getElementById('sim-income-display').textContent = formatTRY(monthlyIncome);
+
+            const inc4 = formatTRYShort(appState.fixedIncome + appState.weeklyAllowance * 4);
+            const inc5 = formatTRYShort(appState.fixedIncome + appState.weeklyAllowance * 5);
+            const btn4 = document.getElementById('btn-4-weeks');
+            const btn5 = document.getElementById('btn-5-weeks');
+
+            btn4.textContent = `4 Hafta (${inc4})`;
+            btn5.textContent = `5 Hafta (${inc5})`;
+
+            if (weeks === 4) {
+                btn4.className = 'px-2.5 py-1 rounded-md text-[11px] font-mono font-semibold bg-zinc-200 text-zinc-950 transition-all';
+                btn5.className = 'px-2.5 py-1 rounded-md text-[11px] font-mono font-medium text-zinc-400 hover:text-zinc-200 transition-all';
+            } else {
+                btn5.className = 'px-2.5 py-1 rounded-md text-[11px] font-mono font-semibold bg-zinc-200 text-zinc-950 transition-all';
+                btn4.className = 'px-2.5 py-1 rounded-md text-[11px] font-mono font-medium text-zinc-400 hover:text-zinc-200 transition-all';
+            }
+
+            // Kart 2: Gider & Yüksek Taksit Oranı Uyarısı (> %45)
+            const expCardEl = document.getElementById('card-total-expense');
+            const instRatioBadgeEl = document.getElementById('sim-inst-ratio-badge');
+            const instSumEl = document.getElementById('sim-installments-sum');
+
+            document.getElementById('sim-total-expense').textContent = formatTRY(totalExpense);
+            instSumEl.textContent = formatTRY(activeInstallmentsSum);
+            document.getElementById('sim-sliders-sum').textContent = formatTRY(slidersTotal);
+
+            const instRatioStr = `%${installmentRatio.toFixed(1).replace('.', ',')}`;
+            if (isHighInstallmentLoad) {
+                expCardEl.className = 'bg-card border border-crimsonBorder rounded-xl p-5 flex flex-col justify-between transition-colors';
+                instRatioBadgeEl.className = 'text-[11px] font-mono font-medium px-2 py-0.5 rounded bg-crimsonMuted text-crimsonAccent border border-crimsonBorder';
+                instRatioBadgeEl.textContent = `Yüksek Taksit: ${instRatioStr}`;
+                instSumEl.className = 'font-mono font-semibold text-crimsonAccent tabular-nums';
+            } else {
+                expCardEl.className = 'bg-card border border-borderDark rounded-xl p-5 flex flex-col justify-between transition-colors';
+                instRatioBadgeEl.className = 'text-[11px] font-mono px-2 py-0.5 rounded bg-obsidian border border-borderDark text-zinc-400';
+                instRatioBadgeEl.textContent = `Taksit Yükü: ${instRatioStr}`;
+                instSumEl.className = 'font-mono font-medium text-zinc-200 tabular-nums';
+            }
+
+            // Kart 3: Net Kalan, Düşük Tampon (< %15) ve Bütçe Açığı (< 0) Uyarısı
+            const remCardEl = document.getElementById('card-net-remaining');
+            const remEl = document.getElementById('sim-net-remaining');
+            const badgeEl = document.getElementById('sim-savings-badge');
+            const statusEl = document.getElementById('sim-status-text');
+            const dailyLimitEl = document.getElementById('sim-daily-limit');
+
+            remEl.textContent = formatTRY(netRemaining);
+            const rateFormatted = `%${Math.abs(savingsRate).toFixed(1).replace('.', ',')}`;
+
+            if (!hasIncome && totalExpense === 0) {
+                remCardEl.className = 'bg-card border border-borderDark rounded-xl p-5 flex flex-col justify-between transition-colors';
+                remEl.className = 'font-mono text-2xl sm:text-3xl font-semibold text-zinc-100 tabular-nums';
+                badgeEl.className = 'text-[11px] font-mono font-medium px-2 py-0.5 rounded bg-obsidian border border-borderDark text-zinc-400';
+                badgeEl.textContent = 'Gelir Girilmedi';
+                statusEl.className = 'text-zinc-400';
+                statusEl.textContent = 'Başlamak için aylık gelirini ve taksitlerini ekle.';
+                dailyLimitEl.className = 'font-mono text-zinc-500 text-[11px]';
+                dailyLimitEl.textContent = 'Günlük: 0,00 ₺';
+            } else if (isDeficit) {
+                remCardEl.className = 'bg-card border border-crimsonBorder rounded-xl p-5 flex flex-col justify-between transition-colors';
+                remEl.className = 'font-mono text-2xl sm:text-3xl font-semibold text-crimsonAccent tabular-nums';
+                badgeEl.className = 'text-[11px] font-mono font-semibold px-2 py-0.5 rounded bg-crimsonMuted text-crimsonAccent border border-crimsonBorder';
+                badgeEl.textContent = hasIncome ? `Bütçe Açığı (-${rateFormatted})` : 'Bütçe Açığı';
+                statusEl.className = 'text-crimsonAccent font-medium';
+                statusEl.textContent = hasIncome ? 'Giderler geliri aştı, çubukları kıs!' : 'Henüz gelir girilmedi, giderlerin açık veriyor.';
+                dailyLimitEl.className = 'font-mono text-crimsonAccent text-[11px] font-medium';
+                dailyLimitEl.textContent = `Açık: ${formatTRY(Math.abs(netRemaining))}`;
+            } else if (isLowBuffer) {
+                remCardEl.className = 'bg-card border border-crimsonBorder rounded-xl p-5 flex flex-col justify-between transition-colors';
+                remEl.className = 'font-mono text-2xl sm:text-3xl font-semibold text-crimsonAccent tabular-nums';
+                badgeEl.className = 'text-[11px] font-mono font-medium px-2 py-0.5 rounded bg-crimsonMuted text-crimsonAccent border border-crimsonBorder';
+                badgeEl.textContent = `Kritik Eşik: %15 Altı (${rateFormatted})`;
+                statusEl.className = 'text-zinc-300';
+                statusEl.textContent = 'Güvenlik payı çok daraldı, dikkatli harca.';
+                dailyLimitEl.className = 'font-mono text-zinc-400 text-[11px]';
+                dailyLimitEl.textContent = `Günlük: ${formatTRY(netRemaining / 30)}`;
+            } else {
+                remCardEl.className = 'bg-card border border-borderDark rounded-xl p-5 flex flex-col justify-between transition-colors';
+                remEl.className = 'font-mono text-2xl sm:text-3xl font-semibold text-emeraldAccent tabular-nums';
+                badgeEl.className = 'text-[11px] font-mono font-medium px-2 py-0.5 rounded bg-emeraldMuted text-emeraldAccent border border-emeraldAccent/20';
+                badgeEl.textContent = `${rateFormatted} Tasarruf`;
+                statusEl.className = 'text-zinc-400';
+                statusEl.textContent = 'Bütçe rahat, tasarruf alanın var.';
+                dailyLimitEl.className = 'font-mono text-zinc-500 text-[11px]';
+                dailyLimitEl.textContent = `Ekstra günlük: ${formatTRY(netRemaining / 30)}`;
+            }
+
+            // Gider Dağılımı Progress Bar & Lejant Renklendirmesi
+            const denom = Math.max(monthlyIncome, totalExpense, 1);
+            const pctInst = (activeInstallmentsSum / denom) * 100;
+            const pctDaily = (dailySum / denom) * 100;
+            const pctPersonal = (personalSum / denom) * 100;
+            const pctRem = netRemaining > 0 ? (netRemaining / denom) * 100 : 0;
+
+            const segInstEl = document.getElementById('seg-inst');
+            const segRemEl = document.getElementById('seg-rem');
+            const legendInstEl = document.getElementById('legend-inst');
+            const legendInstDotEl = document.getElementById('legend-inst-dot');
+            const legendRemEl = document.getElementById('legend-rem');
+            const legendRemDotEl = document.getElementById('legend-rem-dot');
+            const legendRemLabelEl = document.getElementById('legend-rem-label');
+
+            segInstEl.style.width = `${pctInst}%`;
+            document.getElementById('seg-daily').style.width = `${pctDaily}%`;
+            document.getElementById('seg-personal').style.width = `${pctPersonal}%`;
+            segRemEl.style.width = `${pctRem}%`;
+
+            // Taksit > %45 ise bar segmenti kızıl vurgu alır
+            if (isHighInstallmentLoad) {
+                segInstEl.className = 'h-full bg-crimsonAccent/85 rounded-l-full transition-all duration-150';
+                legendInstEl.className = 'flex items-center gap-1.5 text-crimsonAccent font-medium';
+                legendInstDotEl.className = 'w-2 h-2 rounded-full bg-crimsonAccent';
+            } else {
+                segInstEl.className = 'h-full bg-zinc-200 rounded-l-full transition-all duration-150';
+                legendInstEl.className = 'flex items-center gap-1.5 text-zinc-300';
+                legendInstDotEl.className = 'w-2 h-2 rounded-full bg-zinc-200';
+            }
+
+            // Kalan < %15 veya Açık (< 0) ise kalan/açık göstergesi kızıl olur
+            if (isDeficit) {
+                segRemEl.className = 'h-full bg-crimsonAccent rounded-r-full transition-all duration-150';
+                legendRemEl.className = 'flex items-center gap-1.5 text-crimsonAccent font-semibold';
+                legendRemDotEl.className = 'w-2 h-2 rounded-full bg-crimsonAccent';
+                legendRemLabelEl.textContent = 'Bütçe Açığı';
+            } else if (isLowBuffer) {
+                segRemEl.className = 'h-full bg-crimsonAccent/75 rounded-r-full transition-all duration-150';
+                legendRemEl.className = 'flex items-center gap-1.5 text-crimsonAccent font-medium';
+                legendRemDotEl.className = 'w-2 h-2 rounded-full bg-crimsonAccent';
+                legendRemLabelEl.textContent = 'Kritik Kalan';
+            } else {
+                segRemEl.className = 'h-full bg-emeraldAccent/80 rounded-r-full transition-all duration-150';
+                legendRemEl.className = 'flex items-center gap-1.5 text-emeraldAccent/90 font-medium';
+                legendRemDotEl.className = 'w-2 h-2 rounded-full bg-emeraldAccent';
+                legendRemLabelEl.textContent = 'Kalan';
+            }
+
+            const incDenom = Math.max(monthlyIncome, 1);
+            document.getElementById('bar-pct-inst').textContent = `%${Math.round((activeInstallmentsSum / incDenom) * 100)}`;
+            document.getElementById('bar-pct-daily').textContent = `%${Math.round((dailySum / incDenom) * 100)}`;
+            document.getElementById('bar-pct-personal').textContent = `%${Math.round((personalSum / incDenom) * 100)}`;
+            document.getElementById('bar-pct-rem').textContent = isDeficit
+                ? `-%${Math.round((Math.abs(netRemaining) / incDenom) * 100)}`
+                : `%${Math.round((netRemaining / incDenom) * 100)}`;
+        }
+
+        // Alt Bölüm: Kredi Kartı Taksit Matrisi Tablosunu Oluştur
+        function renderMatrixTable(months) {
+            const thead = document.getElementById('matrix-thead');
+            const tbody = document.getElementById('matrix-tbody');
+            const tfoot = document.getElementById('matrix-tfoot');
+
+            const peakMonth = getPeakCriticalMonth(months);
+            const monthlyActiveTotals = {};
+            const monthlyGrossTotals = {};
+            const monthlyIncomes = {};
+            const monthlyAfterInstallments = {};
+            let totalRemainingDebt = 0;
+
+            months.forEach(mKey => {
+                let activeSum = 0;
+                let grossSum = 0;
+                appState.items.forEach(item => {
+                    const val = item.schedule[mKey] || 0;
+                    grossSum += val;
+                    if (val > 0 && !appState.paidCells[`${item.id}_${mKey}`]) {
+                        activeSum += val;
+                        totalRemainingDebt += val;
+                    }
+                });
+
+                const weeks = appState.monthWeeks[mKey] || 4;
+                const income = appState.fixedIncome + (appState.weeklyAllowance * weeks);
+
+                monthlyActiveTotals[mKey] = Number(activeSum.toFixed(2));
+                monthlyGrossTotals[mKey] = Number(grossSum.toFixed(2));
+                monthlyIncomes[mKey] = Number(income.toFixed(2));
+                monthlyAfterInstallments[mKey] = Number((income - activeSum).toFixed(2));
+            });
+
+            document.getElementById('matrix-total-remaining-badge').textContent = `Kalan Borç: ${formatTRY(totalRemainingDebt)}`;
+
+            // 1. THEAD
+            let headHTML = `<tr>
+                <th class="py-3 px-4 font-medium text-zinc-400 sticky left-0 bg-obsidian z-10 min-w-[180px] border-r border-borderDark">
+                    Harcama / Ürün
+                </th>`;
+
+            months.forEach(mKey => {
+                const isSelected = mKey === selectedSimMonth;
+                const isPeak = mKey === peakMonth;
+
+                let thClasses = 'py-3 px-4 text-right font-medium min-w-[145px] cursor-pointer transition-colors ';
+                if (isPeak) {
+                    thClasses += isSelected
+                        ? 'text-crimsonAccent bg-crimsonMuted border-x border-t border-crimsonBorder'
+                        : 'text-crimsonAccent bg-crimsonMuted/60 hover:bg-crimsonMuted border-x border-crimsonBorder/60';
+                } else {
+                    thClasses += isSelected
+                        ? 'text-zinc-100 bg-zinc-800/40'
+                        : 'text-zinc-400 hover:text-zinc-200';
+                }
+
+                headHTML += `
+                    <th onclick="selectSimulationMonth('${mKey}')" title="Bu ayı üst simülatörde aç"
+                        class="${thClasses}">
+                        <div class="flex flex-col items-end gap-0.5">
+                            <span class="flex items-center gap-1.5">
+                                ${isPeak ? '<span class="w-1.5 h-1.5 rounded-full bg-crimsonAccent"></span>' : ''}
+                                ${formatMonthKey(mKey)}
+                            </span>
+                            ${isPeak
+                                ? '<span class="text-[9px] font-mono uppercase tracking-wider text-crimsonAccent">Kritik Pik Ay</span>'
+                                : (isSelected ? '<span class="text-[9px] font-mono uppercase tracking-widest text-zinc-400">Seçili Ay</span>' : '')}
+                        </div>
+                    </th>`;
+            });
+
+            headHTML += `
+                <th class="py-3 px-4 text-right font-medium text-zinc-400 min-w-[130px] border-l border-borderDark">
+                    Toplam Tutar
+                </th>
+                <th class="py-3 px-3 text-center font-medium text-zinc-500 w-12">
+                    Sil
+                </th>
+            </tr>`;
+            thead.innerHTML = headHTML;
+
+            // 2. TBODY
+            if (appState.items.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="${months.length + 3}" class="py-12 px-4 text-center">
+                            <div class="max-w-md mx-auto bg-obsidian/70 border border-borderDark rounded-xl p-6 flex flex-col items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-card border border-borderDark flex items-center justify-center text-zinc-400">
+                                    <i class="fa-regular fa-credit-card text-sm" aria-hidden="true"></i>
+                                </div>
+                                <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                                    Henüz taksitli harcama eklenmedi. Kendi taksitlerini ve gelirini ekleyerek bütçeni oluşturmaya başla.
+                                </p>
+                                <button onclick="openAddInstallmentModal()"
+                                    class="mt-1 px-4 py-2 rounded-lg bg-zinc-100 hover:bg-white text-zinc-950 text-xs font-semibold transition-all inline-flex items-center gap-1.5 active:scale-95">
+                                    <i class="fa-solid fa-plus text-[11px]" aria-hidden="true"></i>
+                                    <span>İlk Taksiti Ekle</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>`;
+            } else {
+                let bodyHTML = '';
+                appState.items.forEach(item => {
+                    const itemMonths = Object.keys(item.schedule).sort();
+                    bodyHTML += `<tr class="group hover:bg-cardHover/50 transition-colors">
+                        <td class="py-3 px-4 sticky left-0 bg-card group-hover:bg-cardHover z-10 border-r border-borderDark">
+                            <div class="font-medium text-zinc-100">${item.name}</div>
+                            <div class="text-[11px] text-zinc-500 flex items-center gap-1.5 mt-0.5">
+                                <span>${item.purchaseDate}</span>
+                                <span>•</span>
+                                <span class="text-zinc-400 font-mono">${item.installmentCount} Taksit</span>
+                            </div>
+                        </td>`;
+
+                    months.forEach(mKey => {
+                        const amount = item.schedule[mKey];
+                        const isPeak = mKey === peakMonth;
+                        const peakColStyle = isPeak ? 'border-x border-crimsonBorder/40 bg-crimsonMuted/15' : '';
+
+                        if (amount && amount > 0) {
+                            const instIndex = itemMonths.indexOf(mKey) + 1;
+                            const isPaid = !!appState.paidCells[`${item.id}_${mKey}`];
+
+                            bodyHTML += `
+                                <td onclick="togglePaidCell('${item.id}', '${mKey}')"
+                                    title="${isPaid ? 'Ödendi işaretini kaldır' : 'Ödendi olarak işaretle'}"
+                                    class="py-3 px-4 text-right font-mono tabular-nums cursor-pointer installment-cell select-none ${peakColStyle} ${isPaid ? 'bg-zinc-900/60' : ''}">
+                                    <div class="inline-flex flex-col items-end">
+                                        <span class="${isPaid ? 'line-through text-zinc-600' : 'text-zinc-200 font-medium'}">
+                                            ${formatTRY(amount)}
+                                        </span>
+                                        <span class="text-[10px] flex items-center gap-1 mt-0.5 ${isPaid ? 'text-emeraldAccent/80 font-medium' : 'text-zinc-500'}">
+                                            ${isPaid ? '<i class="fa-solid fa-check"></i> Ödendi' : `${instIndex}/${item.installmentCount}. taksit`}
+                                        </span>
+                                    </div>
+                                </td>`;
+                        } else {
+                            bodyHTML += `<td class="py-3 px-4 text-right font-mono text-zinc-700 select-none ${peakColStyle}">—</td>`;
+                        }
+                    });
+
+                    bodyHTML += `
+                        <td class="py-3 px-4 text-right font-mono font-medium text-zinc-300 tabular-nums border-l border-borderDark">
+                            ${formatTRY(item.totalAmount)}
+                        </td>
+                        <td class="py-3 px-3 text-center">
+                            <button onclick="deleteItem('${item.id}')" title="Bu harcamayı sil"
+                                class="w-7 h-7 rounded-lg text-zinc-600 hover:text-red-400 hover:bg-red-500/10 transition-colors flex items-center justify-center mx-auto">
+                                <i class="fa-regular fa-trash-can text-xs"></i>
+                            </button>
+                        </td>
+                    </tr>`;
+                });
+                tbody.innerHTML = bodyHTML;
+            }
+
+            // 3. TFOOT (Aylık Taksit Toplamı, Aylık Gelir 4H/5H, Taksit Sonrası Kalan)
+            const totalAllItems = appState.items.reduce((acc, it) => acc + it.totalAmount, 0);
+
+            // Satır 1: Aylık Taksit Toplamı
+            let footHTML = `
+                <tr class="bg-obsidian/90 border-t border-borderDark">
+                    <td class="py-3 px-4 font-semibold text-zinc-200 uppercase text-[11px] tracking-wider sticky left-0 bg-obsidian z-10 border-r border-borderDark">
+                        Aylık Taksit Toplamı
+                    </td>`;
+            months.forEach(mKey => {
+                const activeVal = monthlyActiveTotals[mKey];
+                const grossVal = monthlyGrossTotals[mKey];
+                const hasPaidInMonth = activeVal < grossVal;
+                const isPeak = mKey === peakMonth;
+                const isOver45 = monthlyIncomes[mKey] > 0 && (activeVal / monthlyIncomes[mKey]) > 0.45;
+
+                footHTML += `
+                    <td class="py-3 px-4 text-right font-mono tabular-nums ${isPeak ? 'border-x border-crimsonBorder/50 bg-crimsonMuted/25' : ''}">
+                        <div class="font-semibold ${isOver45 ? 'text-crimsonAccent' : 'text-zinc-100'}">${formatTRY(activeVal)}</div>
+                        ${hasPaidInMonth ? `<div class="text-[10px] text-zinc-600 line-through">${formatTRY(grossVal)}</div>` : ''}
+                    </td>`;
+            });
+            footHTML += `
+                <td class="py-3 px-4 text-right font-mono font-semibold text-zinc-100 tabular-nums border-l border-borderDark">
+                    ${formatTRY(totalAllItems)}
+                </td>
+                <td></td>
+            </tr>`;
+
+            // Satır 2: Aylık Gelir (4H/5H geçişli)
+            footHTML += `
+                <tr class="bg-card/80 border-t border-borderDark">
+                    <td class="py-3 px-4 font-medium text-zinc-400 text-[11px] uppercase tracking-wider sticky left-0 bg-card z-10 border-r border-borderDark">
+                        <div>Aylık Gelir</div>
+                        <div class="text-[10px] font-normal text-zinc-500 normal-case mt-0.5">4H / 5H geçişli</div>
+                    </td>`;
+            months.forEach(mKey => {
+                const weeks = appState.monthWeeks[mKey] || 4;
+                const isPeak = mKey === peakMonth;
+                footHTML += `
+                    <td class="py-3 px-4 text-right font-mono tabular-nums ${isPeak ? 'border-x border-crimsonBorder/50 bg-crimsonMuted/15' : ''}">
+                        <div class="font-medium text-zinc-300">${formatTRY(monthlyIncomes[mKey])}</div>
+                        <button onclick="toggleMonthWeeks('${mKey}')"
+                            class="mt-1 inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-sans font-medium border transition-colors ${weeks === 5 ? 'bg-zinc-200 text-zinc-950 border-zinc-200 font-semibold' : 'bg-obsidian text-zinc-400 border-borderDark hover:text-zinc-200'}">
+                            <i class="fa-solid fa-repeat text-[9px]"></i>
+                            <span>${weeks} Hafta</span>
+                        </button>
+                    </td>`;
+            });
+            footHTML += `<td class="border-l border-borderDark"></td><td></td></tr>`;
+
+            // Satır 3: Taksit Sonrası Kalan
+            footHTML += `
+                <tr class="bg-obsidian/40 border-t border-borderDark">
+                    <td class="py-3.5 px-4 font-semibold text-zinc-300 uppercase text-[11px] tracking-wider sticky left-0 bg-[#0e0e10] z-10 border-r border-borderDark">
+                        Taksit Sonrası Kalan
+                    </td>`;
+            months.forEach(mKey => {
+                const rem = monthlyAfterInstallments[mKey];
+                const inc = monthlyIncomes[mKey];
+                const hasInc = inc > 0;
+                const remPct = hasInc ? Math.max(0, Math.min(100, Math.round((rem / inc) * 100))) : 0;
+                const isPeak = mKey === peakMonth;
+                const isTight = rem < 0 || (hasInc && (rem / inc) < 0.50);
+
+                const valColorClass = rem < 0
+                    ? 'text-crimsonAccent'
+                    : (!hasInc && rem === 0 ? 'text-zinc-400' : (isTight ? 'text-zinc-100' : 'text-emeraldAccent'));
+
+                footHTML += `
+                    <td class="py-3.5 px-4 text-right font-mono tabular-nums ${isPeak ? 'border-x border-b border-crimsonBorder/60 bg-crimsonMuted/25' : ''}">
+                        <div class="font-semibold text-sm ${valColorClass}">
+                            ${formatTRY(rem)}
+                        </div>
+                        <div class="text-[10px] ${isTight ? 'text-crimsonAccent/90 font-medium' : 'text-zinc-500'} mt-0.5">
+                            ${hasInc ? `Gelirin %${remPct}'i` : 'Gelir girilmedi'}
+                        </div>
+                    </td>`;
+            });
+            footHTML += `<td class="border-l border-borderDark"></td><td></td></tr>`;
+
+            tfoot.innerHTML = footHTML;
+        }
+
+        // =========================================================================
+        // 4. KULLANICI AKSİYONLARI & MODAL YÖNETİMİ
+        // =========================================================================
+        function selectSimulationMonth(monthKey) {
+            selectedSimMonth = monthKey;
+            saveState();
+            renderAll();
+        }
+
+        function setMonthWeeks(monthKey, weeks) {
+            appState.monthWeeks[monthKey] = weeks;
+            saveState();
+            renderAll();
+            showToast(`${formatMonthKey(monthKey)} geliri ${weeks} hafta üzerinden güncellendi.`, 'info');
+        }
+
+        function toggleMonthWeeks(monthKey) {
+            const current = appState.monthWeeks[monthKey] || 4;
+            setMonthWeeks(monthKey, current === 4 ? 5 : 4);
+        }
+
+        function togglePaidCell(itemId, monthKey) {
+            const key = `${itemId}_${monthKey}`;
+            if (appState.paidCells[key]) {
+                delete appState.paidCells[key];
+                showToast('Taksit tekrar aktif borç olarak işaretlendi.', 'info');
+            } else {
+                appState.paidCells[key] = true;
+                showToast('Taksit ödendi olarak işaretlendi ve yükten düşüldü!', 'success');
+            }
+            saveState();
+            renderAll();
+        }
+
+        function deleteItem(itemId) {
+            const item = appState.items.find(i => i.id === itemId);
+            if (!item) return;
+            appState.items = appState.items.filter(i => i.id !== itemId);
+            Object.keys(appState.paidCells).forEach(k => {
+                if (k.startsWith(itemId + '_')) delete appState.paidCells[k];
+            });
+            saveState();
+            renderAll();
+            showToast(`"${item.name}" taksit matrisinden kaldırıldı.`, 'info');
+        }
+
+        function deleteSlider(sliderId) {
+            appState.sliders = appState.sliders.filter(s => s.id !== sliderId);
+            saveState();
+            renderAll();
+            showToast('Özel harcama çubuğu silindi.', 'info');
+        }
+
+        // Gelir Modalı
+        function openIncomeModal() {
+            document.getElementById('modal-fixed-income').value = appState.fixedIncome;
+            document.getElementById('modal-weekly-allowance').value = appState.weeklyAllowance;
+            const modal = document.getElementById('income-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeIncomeModal() {
+            const modal = document.getElementById('income-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function saveIncomeModal(event) {
+            event.preventDefault();
+            appState.fixedIncome = Math.max(0, parseFloat(document.getElementById('modal-fixed-income').value) || 0);
+            appState.weeklyAllowance = Math.max(0, parseFloat(document.getElementById('modal-weekly-allowance').value) || 0);
+            saveState();
+            closeIncomeModal();
+            renderAll();
+            showToast('Gelir parametreleri güncellendi.', 'success');
+        }
+
+        // Yeni Harcama Çubuğu (Slider) Modalı
+        function openAddSliderModal() {
+            document.getElementById('slider-new-label').value = '';
+            document.getElementById('slider-new-val').value = '400';
+            document.getElementById('slider-new-max').value = '3000';
+            const modal = document.getElementById('add-slider-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => document.getElementById('slider-new-label').focus(), 50);
+        }
+
+        function closeAddSliderModal() {
+            const modal = document.getElementById('add-slider-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function handleAddSlider(event) {
+            event.preventDefault();
+            const label = document.getElementById('slider-new-label').value.trim();
+            const category = document.getElementById('slider-new-category').value;
+            const val = Math.max(0, parseFloat(document.getElementById('slider-new-val').value) || 0);
+            const max = Math.max(val + 100, parseFloat(document.getElementById('slider-new-max').value) || 2000);
+
+            if (!label) return;
+
+            appState.sliders.push({
+                id: 'sl-' + Date.now(),
+                category,
+                label,
+                value: val,
+                min: 0,
+                max,
+                step: 25,
+                isDefault: false
+            });
+
+            saveState();
+            closeAddSliderModal();
+            renderAll();
+            showToast(`"${label}" harcama çubuğu eklendi!`, 'success');
+        }
+
+        // Yeni Taksit Modalı
+        function openAddInstallmentModal() {
+            const select = document.getElementById('new-start-month');
+            select.innerHTML = '';
+            const baseMonth = getCurrentMonthKey();
+            for (let i = 0; i < 12; i++) {
+                const mKey = addMonths(baseMonth, i);
+                const opt = document.createElement('option');
+                opt.value = mKey;
+                opt.textContent = formatMonthKey(mKey);
+                if (mKey === selectedSimMonth) opt.selected = true;
+                select.appendChild(opt);
+            }
+            const todayFormatted = new Date().toLocaleDateString('tr-TR', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+            document.getElementById('new-name').value = '';
+            document.getElementById('new-amount').value = '';
+            document.getElementById('new-date').value = todayFormatted;
+            document.getElementById('new-count').value = '3';
+            updateInstallmentPreview();
+
+            const modal = document.getElementById('add-installment-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => document.getElementById('new-name').focus(), 50);
+        }
+
+        function closeAddInstallmentModal() {
+            const modal = document.getElementById('add-installment-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function updateInstallmentPreview() {
+            const amount = parseFloat(document.getElementById('new-amount').value) || 0;
+            const count = parseInt(document.getElementById('new-count').value, 10) || 1;
+            document.getElementById('new-monthly-preview').textContent = `${formatTRY(amount / count)} / ay`;
+        }
+
+        function handleAddInstallment(event) {
+            event.preventDefault();
+            const name = document.getElementById('new-name').value.trim();
+            const totalAmount = parseFloat(document.getElementById('new-amount').value);
+            const count = parseInt(document.getElementById('new-count').value, 10);
+            const purchaseDate = document.getElementById('new-date').value.trim() || 'Belirtilmedi';
+            const startMonth = document.getElementById('new-start-month').value;
+
+            if (!name || isNaN(totalAmount) || totalAmount <= 0) return;
+
+            const baseInstallment = Math.floor((totalAmount / count) * 100) / 100;
+            const schedule = {};
+            let distributedSum = 0;
+
+            for (let i = 0; i < count; i++) {
+                const mKey = addMonths(startMonth, i);
+                if (i === count - 1) {
+                    schedule[mKey] = Number((totalAmount - distributedSum).toFixed(2));
+                } else {
+                    schedule[mKey] = baseInstallment;
+                    distributedSum = Number((distributedSum + baseInstallment).toFixed(2));
+                }
+                if (!appState.monthWeeks[mKey]) {
+                    appState.monthWeeks[mKey] = 4;
+                }
+            }
+
+            appState.items.push({
+                id: 'item-' + Date.now(),
+                name,
+                purchaseDate,
+                totalAmount: Number(totalAmount.toFixed(2)),
+                installmentCount: count,
+                startMonth,
+                schedule
+            });
+
+            saveState();
+            closeAddInstallmentModal();
+            renderAll();
+            showToast(`"${name}" (${count} taksit) matrise eklendi!`, 'success');
+        }
+
+        // Sıfırlama Modalı
+        function openResetModal() {
+            const modal = document.getElementById('reset-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeResetModal() {
+            const modal = document.getElementById('reset-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function confirmResetData() {
+            appState = createCleanDefaultState();
+            selectedSimMonth = appState.selectedMonth;
+            saveState();
+            closeResetModal();
+            renderAll();
+            showToast('Tüm veriler 0 ₺ başlangıç durumuna sıfırlandı.', 'info');
+        }
+
+        // JSON Yedekleme & Geri Yükleme
+        function exportDataJSON() {
+            try {
+                const payload = JSON.stringify(appState, null, 2);
+                const blob = new Blob([payload], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                const dateStr = new Date().toISOString().slice(0, 10);
+                a.href = url;
+                a.download = `taksit-butce-yedek-${dateStr}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showToast('Bütçe verileri JSON dosyası olarak indirildi.', 'success');
+            } catch (e) {
+                showToast('Yedekleme sırasında bir hata oluştu.', 'info');
+            }
+        }
+
+        function triggerImportJSON() {
+            const input = document.getElementById('import-json-input');
+            if (input) {
+                input.value = '';
+                input.click();
+            }
+        }
+
+        function handleImportJSON(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    if (!parsed || typeof parsed !== 'object' || !Array.isArray(parsed.items)) {
+                        throw new Error('Geçersiz dosya yapısı');
+                    }
+                    const clean = createCleanDefaultState();
+                    appState = {
+                        fixedIncome: Number(parsed.fixedIncome) || 0,
+                        weeklyAllowance: Number(parsed.weeklyAllowance) || 0,
+                        selectedMonth: parsed.selectedMonth || clean.selectedMonth,
+                        monthWeeks: parsed.monthWeeks || clean.monthWeeks,
+                        sliders: Array.isArray(parsed.sliders) ? parsed.sliders : clean.sliders,
+                        paidCells: parsed.paidCells || {},
+                        items: parsed.items
+                    };
+                    selectedSimMonth = appState.selectedMonth;
+                    saveState();
+                    renderAll();
+                    showToast('Yedek dosyası başarıyla yüklendi!', 'success');
+                } catch (err) {
+                    showToast('Geçersiz JSON yedek dosyası seçildi.', 'info');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Başlangıç
+        window.addEventListener('DOMContentLoaded', () => {
+            renderAll();
+        });
+    </script>
+</body>
+</html>
